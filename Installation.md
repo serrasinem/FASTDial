@@ -15,7 +15,7 @@
 
 ## Telegram Installation Guide
 
-1- Create a telegram bot and obtain a BotUsername and BotToken. 
+1- Create a telegram bot and obtain a BotUsername and BotToken.   
 2- Fill the paths by replacing ""workspacePath"" in resources/telegram.properties file depending on your project folder.  
 3- Fill telegramBotUsername and telegramBotToken in telegram.properties with the obtained username and token.  
 4- Build FastDial using build.gradle.  
