@@ -120,8 +120,10 @@ In the Account Balance intent, {Amount} and {CurrencyType} variables must be ret
 Simple Pseudo-flow of a bot (Server) and a client (Middleware) interaction
 
 Starting a session without authentication phase:
+
 Client: Init session
-	*{
+
+	{
     	"session_id": "A_VALID_UUID, e.g. aaa111a1-1aaa-11aa-1a1a-1a1aa11a11a1",
     "message_type": "BEGIN_SESSION",
     "message": "disable_auth",
@@ -129,97 +131,119 @@ Client: Init session
     "state": null,
     "lang": ""
 	}
+	
 Server: User Greeting
-{
+
+	{
     "session_id": "aaa111a1-1aaa-11aa-1a1a-1a1aa11a11a1",
     "message_type": "MESSAGE",
     "message": "Welcome to FASTDial. How can I help you today?"
-}
+	}
 
 Client: Intent Utterance
-{
+
+	{
     "session_id": "aaa111a1-1aaa-11aa-1a1a-1a1aa11a11a1",
     "message_type": "USER_UTTERANCE",
     "message": "can I check my account balance?"
-}
+	}
+
 Server: Intent identification and intent notification
-{
+
+	{
     "session_id": "aaa111a1-1aaa-11aa-1a1a-1a1aa11a11a1",
     "message_type": "NOTIFY_INTENT",
     "message": "intent_check",
     "intent": "AccountBalance"
-}
+	}
+
 Client: Intent notification success/fail
-{
+
+	{
     "session_id": "aaa111a1-1aaa-11aa-1a1a-1a1aa11a11a1",
     "message_type": "QUERY_RESPONSE",
     "state": "NOTIFY_INTENT_SUCCESS",
     "message":"AccountBalance",
-}
+	}
+
 Server: Initial queries if necessary
-{
+
+	{
     "session_id": "aaa111a1-1aaa-11aa-1a1a-1a1aa11a11a1",
     "message_type": "KB_QUERY",
     "message": "account_list",
     "intent": "AccountBalance"
-}
+	}
+
 Client: Query responses
-{
+
+	{
     "session_id": "aaa111a1-1aaa-11aa-1a1a-1a1aa11a11a1",
     "message_type": "QUERY_RESPONSE",
     "state": "QUERY_SUCCESS",
     "information_type":"account_list",
     "message":"['saving','checking']"
-}
+	}
+
 Server: Starts filling the slots by asking single question at a time
-{
+
+	{
     "session_id": "aaa111a1-1aaa-11aa-1a1a-1a1aa11a11a1",
     "message_type": "MACHINE_UTTERANCE",
     "message": "You have saving, checking accounts. Which of your accounts would you like to query?"
-}
+	}
+	
 Client: Slot filling answer
-{
+
+	{
     "session_id": "aaa111a1-1aaa-11aa-1a1a-1a1aa11a11a1",
     "message_type": "USER_UTTERANCE",
     "message": "checking please"
-}
+	}
+	
 Server: Slot Value Validation API call
-{
+
+	{
     "session_id": "aaa111a1-1aaa-11aa-1a1a-1a1aa11a11a1",
     "message_type": "VALIDATION_QUERY",
     "information_type": "check_account",
     "message": "checking",
     "intent": "AccountBalance"
-}
+	}
 
 Client: Validation success/fail
-{
+
+	{
     "session_id": "aaa111a1-1aaa-11aa-1a1a-1a1aa11a11a1",
     "message_type": "QUERY_RESPONSE",
     "state": "VALIDATION_SUCCESS",
     "information_type": "check_account",
     "message": "checking"
-}
+	}
+	
 Server: If all slots are filled, send execution call
-{
+
+	{
     "session_id": "aaa111a1-1aaa-11aa-1a1a-1a1aa11a11a1",
     "message_type": "EXECUTE_INTENT",
     "intent": "AccountBalance"
-}
+	}
 
 Client: Execution success/fail
-{
+
+	{
     "session_id": "aaa111a1-1aaa-11aa-1a1a-1a1aa11a11a1",
     "message_type": "QUERY_RESPONSE",
     "state": "EXECUTE_INTENT_SUCCESS",
     "message": {"Amount":100,"CurrencyType":"€"}
-}
+	}
 
 Server: Execution response utterance and restart question
-{
+
+	{
     "session_id": "aaa111a1-1aaa-11aa-1a1a-1a1aa11a11a1",
     "message_type": "MACHINE_UTTERANCE",
     "message": "The current balance on your checking account is 100 \\u20ac. Can I help you with anything else?"
-}
+	}
 
 
