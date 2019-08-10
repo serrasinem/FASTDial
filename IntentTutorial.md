@@ -34,6 +34,7 @@ of possible tasks to the user.
 - slots: the 'ordered' list of slot objects that are needed to be filled to execute the intent.
 
 -- slot object:
+
 --- slot_name: should be unique for the intent. Multiple intents can have the same slot name.
 --- slot_type: implemented Slot types are; Confirmation, Currency, Date, String, Numeric, StringList
 --- constraint: depends on the slot type. The author should be very careful about the constraint definition, 
@@ -87,27 +88,27 @@ Authentication is designed as a separate intent.
 
 The content of an example intent file:
 --------------------------------------
-{
-"name":"AccountBalance",
-"description":"account balance query",
-"keys":"balance,how much money do i have,how much money .* there,how much,amount,money .*enough",
-"confirmation":false,
-"execution_call":"execute_balance",
-"slots": [{
-	"slot_name":"Account",
-	"slot_type": "StringList",
-	"constraint":"_keys_:account_list",
-	"question":"You have {_keys_} accounts. Which of your accounts would you like to query?",
-	"validation_api": "check_account",
-	"error_message": {"not_matched":"I couldn't find such an account. Your account list is: ",
-					  "no_account":"There is no account with the given name."},
-	"mandatory": true,
-	"regex":"from {slot}, in my {slot}, in {slot} account"
-}],
-"success_message":"The current balance on your {Account} account is {Amount} {CurrencyType}. Can I help you with anything else?",
-"error_message": "There was an error while we are checking your balance in the account {Account}. Can I help you with anything else?",
-"direct_helpline": false
-}
+	{
+	"name":"AccountBalance",
+	"description":"account balance query",
+	"keys":"balance,how much money do i have,how much money .* there,how much,amount,money .*enough",
+	"confirmation":false,
+	"execution_call":"execute_balance",
+	"slots": [{
+		"slot_name":"Account",
+		"slot_type": "StringList",
+		"constraint":"_keys_:account_list",
+		"question":"You have {_keys_} accounts. Which of your accounts would you like to query?",
+		"validation_api": "check_account",
+		"error_message": {"not_matched":"I couldn't find such an account. Your account list is: ",
+						  "no_account":"There is no account with the given name."},
+		"mandatory": true,
+		"regex":"from {slot}, in my {slot}, in {slot} account"
+	}],
+	"success_message":"The current balance on your {Account} account is {Amount} {CurrencyType}. Can I help you with anything else?",
+	"error_message": "There was an error while we are checking your balance in the account {Account}. Can I help you with anything else?",
+	"direct_helpline": false
+	}
 
 In the Account Balance intent, {Amount} and {CurrencyType} variables must be returned by the middleware as the response of the intent execution.
 
@@ -120,14 +121,14 @@ Simple Pseudo-flow of a bot (Server) and a client (Middleware) interaction
 
 Starting a session without authentication phase:
 Client: Init session
-{
-    "session_id": "A_VALID_UUID, e.g. aaa111a1-1aaa-11aa-1a1a-1a1aa11a11a1",
+	*{
+    	"session_id": "A_VALID_UUID, e.g. aaa111a1-1aaa-11aa-1a1a-1a1aa11a11a1",
     "message_type": "BEGIN_SESSION",
     "message": "disable_auth",
     "information_type": null,
     "state": null,
     "lang": ""
-}
+	}
 Server: User Greeting
 {
     "session_id": "aaa111a1-1aaa-11aa-1a1a-1a1aa11a11a1",
