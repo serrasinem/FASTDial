@@ -32,7 +32,6 @@ War Installation on an external Servlet:
 3. Open `{catalina_base}/webapps/fastdial.properties` and set the logPath as the "Absolute" path of the new log folder.
 4. The other paths can be kept as they are if any change has not been done to the WAR contents.
 5. Copy FASTDial.war into `{catalina_base}/webapps/`
-6. Delete the temporary folder.
 
 A dialogue can be started through the link below:
 
