@@ -1,0 +1,70 @@
+{
+"name":"Test",
+"description":"",
+"keys":"test.*(it|them),do.*testing",
+"confirmation":true,
+"confirmation_question":"Do you confirm testing {Variable1} {Variable2}?",
+"execution_call":"execute_test",
+"slots": [{
+	"slot_name":"ConfirmDirect",
+	"slot_type": "Confirmation",
+	"constraint":"now,yes,ok,today,positive,of course,correct,right,sure;no,not now,not today,negative,tomorrow;action:directHelpLine",
+	"question" : "Do you want to make an instant test?",
+	"validation_api": "check_test_allowed",
+	"error_message":{"not_matched":"If you do not want to continue with an instant test, we will redirect you to one of our operators. Could you please confirm or reject the instant test?",
+			"not_allowed":"You cannot test anything right now."},
+	"mandatory": true
+},
+{
+	"slot_name":"List1",
+	"slot_type": "StringList",
+	"constraint":"_keys_:key_list_call",
+	"question":"Question1?",
+	"validation_api": "api_call_1",
+	"extra_info_api":"api_call_2",
+	"error_message": {"not_matched":"Not found, choose among: "},
+	"mandatory": true,
+	"regex": "test {slot} option,option {slot}"
+},
+{
+	"slot_name":"List2",
+	"slot_type": "StringList",
+	"constraint":"_keys_:key_list_call2",
+	"question":"Question2?",
+	"validation_api": "api_call_3",
+	"error_message": {"not_matched":"Not found, choose among: "},
+	"mandatory": true,
+	"regex": "test {slot} option2,option2 {slot}"
+},
+{
+	"slot_name":"Currency",
+	"slot_type": "Currency",
+	"constraint":"€",
+	"dependency": "List2",
+	"question":"The variable {InfoVariableNeeded} is needed. Currency Question?",
+	"validation_api": "api_call_4",
+	"error_message": {"not_matched":"The currency cannot be processed. Please provide the amount of money with the currency such as '$500, €500, 500 dollars or 500 euros'."},
+	"mandatory": true
+},
+{
+	"slot_name":"NoteConfirm",
+	"slot_type": "Confirmation",
+	"constraint":"yes,ok,sure,correct,right,positive;no,not now,not today,negative;action:skipNext",
+	"question" : "Question:add a free string?",
+	"validation_api": "NoValidate",
+	"error_message": {"not_matched":"I couldn't understand your request. Confirm/reject question?"},
+	"mandatory": true
+},
+{
+	"slot_name":"FreeString",
+	"slot_type": "String",
+	"constraint":"",
+	"question" : "Keep all string:",
+	"validation_api": "api_call_5",
+	"error_message": {"not_matched":"There is a problem with your request. not saved."},
+	"mandatory": false
+}],
+"success_message":"OK, your test is done. Can I help you with anything else?",
+"error_message": "Your test cannot be executed. {ErrorMessage} Can I help you with anything else?",
+"direct_helpline": false
+}

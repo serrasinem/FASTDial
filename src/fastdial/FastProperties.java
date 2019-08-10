@@ -20,15 +20,14 @@ public class FastProperties {
     public Properties props = null;
 
     /**
-     * Reads the properties in /wtpwebapps/fastdial.properties
+     * Reads the properties in /wtpwebapps/cbf.properties
      */
     public FastProperties() {
 	String base = System.getProperty( "catalina.base" );
 	if(base != null) {
 	 
 	//change to webapps only wtpwebapps
-	String propFileName = base+"/wtpwebapps/fastdial.properties";
-
+	String propFileName = base+"/wtpwebapps/cbf.properties";
 	InputStream inputStream;
 	try {
 	    props = new Properties();

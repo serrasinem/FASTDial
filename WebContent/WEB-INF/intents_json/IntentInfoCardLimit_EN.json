@@ -1,0 +1,51 @@
+{
+"name":"InfoCardLimit",
+"description":"query card limit",
+"keys":"card limit,limit.*card,card.*limit",
+"confirmation":false,
+"execution_call":"execute_card_limit",
+"slots": [{
+	"slot_name":"CardIdentifier",
+	"slot_type": "Numeric",
+	"constraint":"digits:5",
+	"question":"Please enter the last 5 digits of your card number.",
+	"validation_api": "check_card_number_last10",
+	"error_message": {"not_matched":"It is not a valid card number. Please enter a value with 5 digits.",
+		"card_not_found":"I cannot find a card with the given card id."},
+	"mandatory": false
+},
+{
+	"slot_name":"Account",
+	"slot_type": "StringList",
+	"constraint":"_keys_:account_list",
+	"question":"The identification with a card number was not successful. Let's find your card with other information. Which account does the card belong?",
+	"validation_api": "check_account",
+	"error_message": {"not_matched":"I couldn't find such an account. Please enter one of the options among: "},
+	"mandatory": true,
+	"regex": "{slot} account"
+},
+{
+	"slot_name":"CardName",
+	"slot_type": "StringList",
+	"constraint":"_keys_:card_list",
+	"dependency": "Account",
+	"question":"You have {_keys_} cards that belong to your account. Which card would you like to query?",
+	"validation_api": "check_card_name",
+	"error_message": {"not_matched":"I couldn't find such a card. Please enter one of the options among: ",
+		"no_cardname":"I cannot find a card with the given name."},
+	"mandatory": true,
+	"regex": "{slot} card"
+},
+{
+	"slot_name":"TimePeriod",
+	"slot_type": "StringList",
+	"constraint":"monthly,daily",
+	"question":"Would you like to learn your daily or monthly limit?",
+	"validation_api": "check_period",
+	"error_message": {"not_matched":"The period value is not correct. Please enter one of the options among: "},
+	"mandatory": true
+}],
+"success_message":"The {TimePeriod} transfer limit of your card is {Amount}{CurrencyType}. Can I help you with anything else?",
+"error_message": "We cannot execute your request right now. {ErrorMessage} Can I help you with anything else?",
+"direct_helpline": false
+}

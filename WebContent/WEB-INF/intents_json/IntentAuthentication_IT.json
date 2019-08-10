@@ -1,0 +1,28 @@
+{
+"name":"Authentication",
+"description":"",
+"keys":"_authentication_",
+"confirmation":false,
+"execution_call":"execute_authenticate",
+"slots": [{
+	"slot_name":"Name",
+	"slot_type": "StringSlot",
+	"constraint":"",
+	"question":"Per favore inserisci il tuo nome utente.",
+	"validation_api": "check_username",
+	"error_message": {"not_matched":"Non è stato trovato nessun utente con il nome utente indicato."},
+	"mandatory": true
+},
+{
+	"slot_name":"Password",
+	"slot_type": "StringSlot",
+	"constraint":"",
+	"question":"Inserisci la password di 8 caratteri.",
+	"validation_api": "check_password",
+	"error_message": {"not_matched":"Hai inserito una password errata."},
+	"mandatory": true
+}],
+"success_message":"Grazie per la tua pazienza, ti abbiamo autenticato. Come posso aiutarti oggi?" ,
+"error_message": "Siamo spiacenti, non possiamo autenticarti. Ora ti reindirizzerò a uno dei nostri specialisti clienti. Grazie per la vostra pazienza.",
+"direct_helpline": true
+}

@@ -1,0 +1,75 @@
+{
+"name":"FlightBooking",
+"description":"",
+"keys":"make.*(booking|flight|fly),book.*flight,flight,(learn|check|find|reserve).*flight",
+"confirmation":true,
+"confirmation_question":"You are ordering {NbTickets} ticket(s) from {Departure} to {Destination} on {Date} for a total cost of {TotalCost} EUR. Shall I confirm your order?",
+"execution_call":"execute_booking",
+"slots": [{
+	"slot_name":"Destination",
+	"slot_type": "StringList",
+	"constraint":"Oslo,Bergen,Trondheim,Stavanger,Moss,Sandefjord,Tromso,Bodo,Kristiansand,Alesund",
+	"question" : "What is your destination?",
+	"validation_api": "NoValidate",
+	"error_message": {"not_matched":"There is no airport with the name you provided. Please enter one of the options among: "},
+	"mandatory": true,
+	"regex":"to {slot},{slot} as my destination, destionation is {slot}"
+},{
+	"slot_name":"Departure",
+	"slot_type": "StringList",
+	"constraint":"Oslo,Bergen,Trondheim,Stavanger,Moss,Sandefjord,Tromso,Bodo,Kristiansand,Alesund",
+	"question" : "Where is your departure?",
+	"validation_api": "compare_to_destination",
+	"error_message": {"not_matched":"There is no airport with the name you provided. Please enter one of the options among: "},
+	"mandatory": true,
+	"regex":"from {slot}, {slot} as my departure, departure is {slot}"
+},
+{
+	"slot_name":"Date",
+	"slot_type": "Date",
+	"constraint":">now",
+	"question":"When would you like to depart?",
+	"validation_api": "NoValidate",
+	"error_message": {"not_matched":"The date you have provided is not valid, please check your departure date."},
+	"mandatory": true
+},
+{
+	"slot_name":"ReturnConfirm",
+	"slot_type": "Confirmation",
+	"constraint":"yes,ok,sure,correct,right,positive;no,not now,not today,negative;action:skipNext",
+	"question" : "Do you want to also book a return ticket?",
+	"validation_api": "NoValidate",
+	"error_message": {"not_matched":"I couldn't understand your request. Could you please confirm or reject adding a return ticket?"},
+	"mandatory": true
+},
+{
+	"slot_name":"ReturnDate",
+	"slot_type": "Date",
+	"constraint":">now",
+	"question":"When would you like to return?",
+	"validation_api": "compare_return_depart",
+	"error_message": {"not_matched":"The date you have provided is not valid, please check your departure date."},
+	"mandatory": false
+},
+{
+	"slot_name":"NbTickets",
+	"slot_type": "Numeric",
+	"constraint":">0",
+	"question":"How many tickets should I order?",
+	"validation_api": "can_order",
+	"error_message": {"not_matched":"The number cannot be processed. Please provide the number of tickets in digits."},
+	"mandatory": true
+},
+{
+	"slot_name":"PriceOffer",
+	"slot_type": "Confirmation",
+	"constraint":"yes,ok,sure,correct,right,positive;no,not now,not today,negative;action:cancelIntent",
+	"question":"Flight tickets from {Departure} to {Destination} on {Date} {ReturnText} {Price} EUR per person. Do you want me to order tickets?",
+	"validation_api": "NoValidate",
+	"error_message": {"not_matched":"I couldn't understand your request. Could you please confirm or reject the price?"},
+	"mandatory": true
+}],
+"success_message":"OK, your tickets are now ordered and will be sent to you via email. Can I help you with anything else?",
+"error_message": "OK, your booking is now cancelled. Can I help you with anything else?",
+"direct_helpline": false
+}

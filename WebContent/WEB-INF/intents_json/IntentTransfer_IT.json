@@ -1,0 +1,65 @@
+{
+"name":"Transfer",
+"description":"make a money transfer",
+"keys":"trasferire,inviare,esportare,dare denaro,fare un bonifico,bonifico,mandare,bonificare",
+"confirmation":true,
+"confirmation_question":"Confermate l'invio di {Amount} a {ToAccount} dal vostro conto {Account} ?",
+"execution_call":"execute_transfer",
+"slots": [
+{
+	"slot_name":"Account",
+	"slot_type": "StringList",
+	"constraint":"_keys_:account_list",
+	"question":"Da quale conto vuoi effettuare il bonifico?",
+	"validation_api": "check_account",
+	"extra_info_api": "account_info",
+	"error_message": {"not_matched":"Non siamo riusciti a trovare un conto di questo tipo. Si prega di inserire una delle opzioni tra: "},
+	"mandatory": true,
+	"regex": "da* {slot}, conto {slot}"
+},
+{
+	"slot_name":"ToAccount",
+	"slot_type": "StringList",
+	"constraint":"_keys_:saved_recipient_list",
+	"question":"Le informazioni sul destinatario devono essere state salvate prima sul tuo conto. Qual è il nome del destinatario?",
+	"validation_api": "check_partner",
+	"error_message": {"not_matched":"Non c'è nessun destinatario con il nome che hai fornito tra quelli salvati. I tuoi destinatarie sono: ",
+					"no_recipient":"Non c'è nessun destinatario con il nome che hai fornito tra quelli salvati."},
+	"mandatory": true,
+	"regex": "a {redundant} a {slot}, voglio [\\w\\s]+ a {slot}, denaro per {slot} "
+},
+{
+	"slot_name":"Amount",
+	"slot_type": "Currency",
+	"constraint":"€",
+	"dependency": "Account",
+	"question":"Il limite di trasferimento di questo conto è {AccountTransferLimit} e il saldo è {AccountBalance}. Quanti soldi vorresti trasferire?",
+	"validation_api": "check_enough_funds_and_limit",
+	"error_message": {"not_matched":"L'importo che hai fornito è superiore all'importo del bonifico possibile. Quanti soldi vorresti trasferire?",
+	 				"limit_exceeded":"L'importo richiesto e oltre il massimale."},
+	"mandatory": true
+},
+{
+	"slot_name":"NoteConfirm",
+	"slot_type": "Confirmation",
+	"constraint":"sì,si,corretto,esattamente,sicuro,giusto,yes,confermo,ok,va bene,bene,certo,certamente;no,non ora,non oggi,negativo;action:skipNext",
+	"question" : "Vuoi aggiungere una nota / commento al tuo trasferimento?",
+	"validation_api": "NoValidate",
+	"error_message": {"not_matched":"Non ho capito la tua richiesta. Potresti confermare o rifiutare l'aggiunta di una nota? "},
+	"mandatory": true,
+	"regex":"con una nota,con una nota,aggiungi. * nota,allega una nota;senza una nota,nessuna nota,nessuna nota aggiunta,ignorando la nota,senza nota"
+	
+},
+{
+	"slot_name":"Note",
+	"slot_type": "String",
+	"constraint":"",
+	"question" : "Ora per favore dimmi il tuo messaggio:",
+	"validation_api": "savePost",
+	"error_message": {"not_matched":"C'è un problema con la tua richiesta. Impossibile salvare la tua nota."},
+	"mandatory": false
+}],
+"success_message":"OK, il bonifico è stato fatto. Posso aiutarti in qualcos'altro?",
+"error_message": "Il tuo bonifico non può essere inserito. {ErrorMessage} Posso aiutarti in qualcos'altro?",
+"direct_helpline": false
+}

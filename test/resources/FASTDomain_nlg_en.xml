@@ -1,0 +1,421 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain>
+	<!-- Natural language generation models. The domain can produce new system 
+		utterance either when the current step is changed, or when a new system action 
+		is selected. -->
+
+	<model trigger="current_step">
+		<!--Model producing new system utterances when the current step is moved 
+			to a new step.  Any new slot type should be added as a current_step 
+			rule/case/condition in this model. The slot type rules are left 
+			separated instead of using <if var="current_step" relation="in" value="[....]" />
+			so that it is possible to modify NLG strategies of each slot type.-->
+		<rule>
+			<case>
+				<condition>
+					<if var="current_step" value="Date" />
+				</condition>
+				<effect util="1">
+					<set var="u_m" value="{MachineUtterance}" />
+				</effect>
+			</case>
+		</rule>
+		<rule>
+			<case>
+				<condition>
+					<if var="current_step" value="Currency" />
+				</condition>
+				<effect util="1">
+					<set var="u_m" value="{MachineUtterance}" />
+				</effect>
+			</case>
+		</rule>
+		<rule>
+			<case>
+				<condition>
+					<if var="current_step" value="StringList" />
+				</condition>
+				<effect util="1">
+					<set var="u_m" value="{MachineUtterance}" />
+				</effect>
+			</case>
+		</rule>
+		<rule>
+			<case>
+				<condition>
+					<if var="current_step" value="Numeric" />
+				</condition>
+				<effect util="1">
+					<set var="u_m" value="{MachineUtterance}" />
+				</effect>
+			</case>
+		</rule>
+		
+		<rule>
+			<case>
+				<condition>
+					<if var="current_step" value="StringSlot" />
+				</condition>
+				<effect util="1">
+					<set var="u_m" value="{MachineUtterance}" />
+				</effect>
+			</case>
+		</rule>	
+		<rule>
+			<case>
+				<condition>
+					<if var="current_step" value="Confirmation" />
+				</condition>
+				<effect util="1">
+					<set var="u_m" value="{MachineUtterance}" />
+				</effect>
+			</case>
+		</rule>
+		
+		<!-- Closes the interaction -->
+		<rule>
+			<case>
+				<condition>
+					<if var="current_step" value="Close" />
+				</condition>
+				<effect util="1">
+					<set var="u_m" value="Thank you for choosing us and hoping to welcome you back soon." />
+				</effect>
+			</case>
+		</rule>
+		
+		<!-- Redirecting the interaction to a human.-->
+		<rule>
+			<case>
+				<condition>
+					<if var="current_step" value="CloseWithHelpline" />
+				</condition>
+				<effect util="1">
+					<set var="u_m" value="I will redirect you to one of our customer specialists now. Thank you for choosing us and hoping to welcome you back soon." />
+				</effect>
+			</case>
+		</rule>
+	</model>
+
+	<model trigger="a_m">
+		<!-- Model producing new system utterances related to the last system action -->
+		<rule>
+			<case>
+				<condition>
+					<if var="a_m" value="AskRepeat" />
+					<if var="current_step" value="Init" />
+					<if var="AskRepeat" relation="&lt;" value="3" />
+				</condition>
+				<effect util="1">
+					<set var="u_m"
+						value="Sorry, could you specify what you would like to do? You can perform the following actions: account balance query, query card limit, make a money transfer" />
+				</effect>
+			</case>
+			<case>
+				<condition>
+					<if var="a_m" value="AskRepeat" />
+					<if var="current_step" value="Init" />
+					<if var="AskRepeat" value="3" />
+				</condition>
+				<effect util="1">
+					<set var="u_m"
+						value="This is your last chance. You can perform the following actions: account balance query, query card limit, make a money transfer" />
+				</effect>
+			</case>
+			<!-- Any new slot type should be added to the list below-->
+			<case>
+				<condition>
+					<if var="a_m" value="AskRepeat" />
+					<if var="current_step" relation="in" value="[StringSlot,Date,Currency,StringList,Numeric,Confirmation]" />
+					<if var="AskRepeat" value="3" />
+				</condition>
+				<effect util="1">
+					<set var="u_m"
+						value="This is your last chance. {ConstraintRequest}" />
+				</effect>
+			</case>
+			<case>
+				<condition>
+					<if var="a_m" value="AskRepeat" />
+					<if var="current_step" relation="in" value="[StringSlot,Date,Currency,StringList,Numeric,Confirmation]" />
+					<if var="AskRepeat" relation="&lt;" value="3" />
+				</condition>
+				<effect util="1">
+					<set var="u_m"
+						 value="{ConstraintRequest}" />
+				</effect>
+			</case>
+			<case>
+				<condition>
+					<if var="a_m-prev" value="AskRepeat" />
+					<if var="a_m" value="AskRepeat" />
+					<if var="AskRepeat" relation="&lt;" value="3" />
+				</condition>
+				<effect util="1">
+					 <set var="u_m" value="Sorry I couldn't understand you. Could you please repeat one more time?" />
+				</effect>
+			</case> 
+			<case>
+				<condition>
+					<if var="a_m" value="AskRepeat" />
+					<if var="AskRepeat" relation="&lt;" value="3" />
+				</condition>
+				<effect util="1">
+					<set var="u_m" value="Sorry, could you repeat your answer?" />
+				</effect>
+			</case>
+			<case>
+				<condition>
+					<if var="a_m" value="AskRepeat" />
+					<if var="AskRepeat" value="3" />
+				</condition>
+				<effect util="1">
+					<set var="u_m" value="This is your last chance to correct your answer. Otherwise I will redirect you to one of our operators. Please provide me a right answer." />
+				</effect>
+			</case>
+		</rule>
+		<rule>
+			<case>
+				<condition>
+					<if var="a_m" value="ValidateRepeat" />
+				</condition>
+				<effect util="1">
+					<set var="u_m" value="{SlotNotValidated} Do you want to choose another answer?" />
+				</effect>
+			</case>
+		</rule>
+		<!-- Grounding the restart -->
+		<rule>
+			<case>
+				<condition>
+					<if var="a_m" value="Ground(Restart)" />
+				</condition>
+				<effect util="1">
+					<set var="RestartUtterance" value="OK, how can I help you?" />
+				</effect>
+			</case>
+		</rule>
+		<!-- Grounding the cancellation -->
+		<rule>
+			<case>
+				<condition>
+					<if var="a_m" value="Ground(Cancel)" />
+				</condition>
+				<effect util="1">
+					<set var="u_m" value="OK, I am canceling your request. Can I help you with anything else?" />
+				</effect>
+			</case>
+		</rule>
+		
+		<rule>
+			<case>
+				<condition>
+					<if var="a_m" value="Ground(FlightBooking,Done)" />
+				</condition>
+				<effect util="1">
+					<set var="u_m" value="You are ordering {NbTickets} ticket(s) from {Departure} to {Destination} on {Date} for a total cost of {TotalCost} EUR. Shall I confirm your order?" />
+				</effect>
+			</case>
+		</rule><rule>
+			<case>
+				<condition>
+					<if var="a_m" value="Ground(OrderPizza,Done)" />
+				</condition>
+				<effect util="1">
+					<set var="u_m" value="You are ordering for {NbPizza} pizza {Pizza} {DrinkText}. Do you confirm?" />
+				</effect>
+			</case>
+		</rule><rule>
+			<case>
+				<condition>
+					<if var="a_m" value="Ground(Test,Done)" />
+				</condition>
+				<effect util="1">
+					<set var="u_m" value="Do you confirm testing {Variable1} {Variable2}?" />
+				</effect>
+			</case>
+		</rule><rule>
+			<case>
+				<condition>
+					<if var="a_m" value="Ground(Transfer,Done)" />
+				</condition>
+				<effect util="1">
+					<set var="u_m" value="Do you confirm sending {Amount} to {ToAccount} from {Account} account?" />
+				</effect>
+			</case>
+		</rule>
+	</model>
+
+	<model trigger="a_m,current_step">
+			<rule>
+			<case>
+				<condition>
+					<if var="a_m" value="AllPossible" />
+					<if var="response" value="success"/>
+				</condition>
+				<effect util="1">
+					<set var="u_m"
+						value="You can do some banking actions such as money transfer, balance check or you can book a flight maybe even order a pizza. What would you like to do?"  />
+				</effect>
+			</case>
+			<case>
+				<condition>
+					<if var="a_m" value="AllPossible" />
+					<if var="response" value="error"/>
+				</condition>
+				<effect util="1">
+					<set var="u_m"
+						value="There is an error."  />
+</effect>
+			</case>
+		</rule>		<rule>
+			<case>
+				<condition>
+					<if var="a_m" value="AccountBalance" />
+					<if var="response" value="success"/>
+				</condition>
+				<effect util="1">
+					<set var="u_m"
+						value="The current balance on your {Account} account is {Amount} {CurrencyType}. Can I help you with anything else?"  />
+				</effect>
+			</case>
+			<case>
+				<condition>
+					<if var="a_m" value="AccountBalance" />
+					<if var="response" value="error"/>
+				</condition>
+				<effect util="1">
+					<set var="u_m"
+						value="There was an error while we are checking your balance in the account {Account}. Can I help you with anything else?"  />
+</effect>
+			</case>
+		</rule>		<rule>
+			<case>
+				<condition>
+					<if var="a_m" value="Authentication" />
+					<if var="response" value="success"/>
+				</condition>
+				<effect util="1">
+					<set var="u_m"
+						value="Thank you for your patience, we have authenticated you. How can I help you today?"  />
+				</effect>
+			</case>
+			<case>
+				<condition>
+					<if var="a_m" value="Authentication" />
+					<if var="response" value="error"/>
+				</condition>
+				<effect util="1">
+					<set var="u_m"
+						value="Sorry, we cannot authenticate you. I will redirect you to one of our customer specialists now. Thank you for your patience."  />
+		    <set var="a_m" value="DirectHelpLine" /></effect>
+			</case>
+		</rule>		<rule>
+			<case>
+				<condition>
+					<if var="a_m" value="FlightBooking" />
+					<if var="response" value="success"/>
+				</condition>
+				<effect util="1">
+					<set var="u_m"
+						value="OK, your tickets are now ordered and will be sent to you via email. Can I help you with anything else?"  />
+				</effect>
+			</case>
+			<case>
+				<condition>
+					<if var="a_m" value="FlightBooking" />
+					<if var="response" value="error"/>
+				</condition>
+				<effect util="1">
+					<set var="u_m"
+						value="OK, your booking is now cancelled. Can I help you with anything else?"  />
+</effect>
+			</case>
+		</rule>		<rule>
+			<case>
+				<condition>
+					<if var="a_m" value="InfoCardLimit" />
+					<if var="response" value="success"/>
+				</condition>
+				<effect util="1">
+					<set var="u_m"
+						value="The {TimePeriod} transfer limit of your card is {Amount}{CurrencyType}. Can I help you with anything else?"  />
+				</effect>
+			</case>
+			<case>
+				<condition>
+					<if var="a_m" value="InfoCardLimit" />
+					<if var="response" value="error"/>
+				</condition>
+				<effect util="1">
+					<set var="u_m"
+						value="We cannot execute your request right now. {ErrorMessage} Can I help you with anything else?"  />
+</effect>
+			</case>
+		</rule>		<rule>
+			<case>
+				<condition>
+					<if var="a_m" value="OrderPizza" />
+					<if var="response" value="success"/>
+				</condition>
+				<effect util="1">
+					<set var="u_m"
+						value="OK, your order has been up. Can I help you with anything else?"  />
+				</effect>
+			</case>
+			<case>
+				<condition>
+					<if var="a_m" value="OrderPizza" />
+					<if var="response" value="error"/>
+				</condition>
+				<effect util="1">
+					<set var="u_m"
+						value="I cannot make an order now. Can I help you with anything else?"  />
+</effect>
+			</case>
+		</rule>		<rule>
+			<case>
+				<condition>
+					<if var="a_m" value="Test" />
+					<if var="response" value="success"/>
+				</condition>
+				<effect util="1">
+					<set var="u_m"
+						value="OK, your test is done. Can I help you with anything else?"  />
+				</effect>
+			</case>
+			<case>
+				<condition>
+					<if var="a_m" value="Test" />
+					<if var="response" value="error"/>
+				</condition>
+				<effect util="1">
+					<set var="u_m"
+						value="Your test cannot be executed. {ErrorMessage} Can I help you with anything else?"  />
+</effect>
+			</case>
+		</rule>		<rule>
+			<case>
+				<condition>
+					<if var="a_m" value="Transfer" />
+					<if var="response" value="success"/>
+				</condition>
+				<effect util="1">
+					<set var="u_m"
+						value="OK, your transfer is done. Can I help you with anything else?"  />
+				</effect>
+			</case>
+			<case>
+				<condition>
+					<if var="a_m" value="Transfer" />
+					<if var="response" value="error"/>
+				</condition>
+				<effect util="1">
+					<set var="u_m"
+						value="Your transfer cannot be executed. {ErrorMessage} Can I help you with anything else?"  />
+</effect>
+			</case>
+		</rule>
+	</model>
+
+</domain>

@@ -1,0 +1,59 @@
+{
+"name":"OrderPizza",
+"description": "",
+"keys":"order.*pizza,order,order.*drink",
+"confirmation":true,
+"confirmation_question":"You are ordering for {NbPizza} pizza {Pizza} {DrinkText}. Do you confirm?",
+"execution_call":"execute_order",
+"slots": [{
+	"slot_name":"Pizza",
+	"slot_type": "StringList",
+	"constraint":"margherita,marinara,napoli,capricciosa,tonno",
+	"question" : "We offer the following pizza types: {_keys_}, which kind would you like?",
+	"validation_api": "NoValidate",
+	"error_message": {"not_matched":"There is no pizza with the name you provided. Please enter one of the options among: "},
+	"mandatory": true
+},
+{
+	"slot_name":"NbPizza",
+	"slot_type": "Numeric",
+	"constraint":">0",
+	"question":"How many pizzas would you like to order?",
+	"validation_api": "canOrder",
+	"extra_info_api": "get_price",
+	"dependency": "Pizza",
+	"error_message": {"not_matched":"The number cannot be processed. Please provide the number of pizzas in digits."},
+	"mandatory": true
+},{
+	"slot_name":"DrinkConfirm",
+	"slot_type": "Confirmation",
+	"constraint":"now,yes,ok,today,positive,of course,correct,right,sure;no,not now,not today,negative,tomorrow;action:skipNext",
+	"question" : "Would you like a drink with that?",
+	"validation_api": "drink_addable",
+	"error_message": {"not_matched":"Please confirm or disconfirm any drink order."},
+	"mandatory": true
+}
+,{
+	"slot_name":"Drink",
+	"slot_type": "StringList",
+	"constraint":"coke,fanta,orange juice,beer,wine",
+	"question" : "What would you like to drink, we have {_keys_}",
+	"validation_api": "NoValidate",
+	"error_message": {"not_matched":"You can order following types of drinks: "},
+	"mandatory": true
+},
+{
+	"slot_name":"NbDrink",
+	"slot_type": "Numeric",
+	"constraint":">0",
+	"question":"How many drinks should I order?",
+	"validation_api": "NoValidate",
+	"extra_info_api": "drink_text",
+	"dependency": "Drink",
+	"error_message": {"not_matched":"The number cannot be processed. Please provide the number of drinks in digits."},
+	"mandatory": true
+}],
+"success_message":"OK, your order has been up. Can I help you with anything else?",
+"error_message": "I cannot make an order now. Can I help you with anything else?",
+"direct_helpline": false
+}

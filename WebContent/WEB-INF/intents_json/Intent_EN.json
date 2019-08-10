@@ -1,0 +1,11 @@
+{
+"name":"AllPossible",
+"description":"",
+"keys":"what can .* (ask!do),(what|tell).*the options,what .* possible (intent|action),what.* your capabilit.*,can you list ,how can you help.*",
+"confirmation":false,
+"execution_call":"execute_list",
+"slots:":[],
+"success_message":"You can do some banking actions such as money transfer, balance check or you can book a flight maybe even order a pizza. What would you like to do?",
+"error_message": "There is an error.",
+"direct_helpline": false
+}

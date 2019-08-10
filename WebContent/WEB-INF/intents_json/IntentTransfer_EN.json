@@ -1,0 +1,64 @@
+{
+"name":"Transfer",
+"description":"make a money transfer",
+"keys":"make.*(transfer|transaction),send.*money,send,export,transfer,make.*payment",
+"confirmation":true,
+"confirmation_question":"Do you confirm sending {Amount} to {ToAccount} from {Account} account?",
+"execution_call":"execute_transfer",
+"slots": [
+{
+	"slot_name":"Account",
+	"slot_type": "StringList",
+	"constraint":"_keys_:account_list",
+	"question":"From which account do you want to make the transfer?",
+	"validation_api": "check_account",
+	"extra_info_api": "account_info",
+	"error_message": {"not_matched":"I couldn't find such an account. Please enter one of the options among: "},
+	"mandatory": true,
+	"regex": "from {slot} account,{slot} account"
+},
+{
+	"slot_name":"ToAccount",
+	"slot_type": "StringList",
+	"constraint":"_keys_:saved_recipient_list",
+	"question":"The recipient should have been saved before. What is the saved name for the recipient?",
+	"validation_api": "check_partner",
+	"error_message": {"not_matched":"There is no saved recipient with the name you provided. Your partners are: ",
+					  "no_recipient":"There is no saved recipient with the given name."},
+	"mandatory": true,
+	"regex": "send to {slot}.*,transfer to {slot}.*,money to {slot}.*"
+},
+{
+	"slot_name":"Amount",
+	"slot_type": "Currency",
+	"constraint":"€",
+	"dependency": "Account",
+	"question":"Your transfer limit in this account is {AccountTransferLimit} and your balance is {AccountBalance}. How much money would you like to transfer?",
+	"validation_api": "check_enough_funds_and_limit",
+	"error_message": {"not_matched":"The amount cannot be processed. Please provide the amount of money with the currency such as '€500 or 500 dollars'.",
+					"limit_exceeded":"You have exceeded the amount that you can send."},
+	"mandatory": true
+},
+{
+	"slot_name":"NoteConfirm",
+	"slot_type": "Confirmation",
+	"constraint":"yes,ok,sure,correct,right,positive;no,not now,not today,negative;action:skipNext",
+	"question" : "Do you want to add a note/comment to your transfer?",
+	"validation_api": "NoValidate",
+	"error_message": {"not_matched":"I couldn't understand your request. Could you please confirm or reject adding a note?"},
+	"mandatory": true,
+	"regex":"with a note,with note,add.*note,attach note;without a note,no note,no added note,skipping note,noteless"
+},
+{
+	"slot_name":"Note",
+	"slot_type": "String",
+	"constraint":"",
+	"question" : "Now please tell me your note:",
+	"validation_api": "savePost",
+	"error_message": {"not_matched":"There is a problem with your request. Your note could not be saved."},
+	"mandatory": false
+}],
+"success_message":"OK, your transfer is done. Can I help you with anything else?",
+"error_message": "Your transfer cannot be executed. {ErrorMessage} Can I help you with anything else?",
+"direct_helpline": false
+}

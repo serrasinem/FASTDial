@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain>
+	<!-- Natural language generation models. The domain can produce new system 
+		utterance either when the current step is changed, or when a new system action 
+		is selected. -->
+
+	<model trigger="current_step">
+		<!--Model producing new system utterances when the current step is moved 
+			to a new step.  Any new slot type should be added as a current_step 
+			rule/case/condition in this model. The slot type rules are left 
+			separated instead of using <if var="current_step" relation="in" value="[....]" />
+			so that it is possible to modify NLG strategies of each slot type.-->
+		<rule>
+			<case>
+				<condition>
+					<if var="current_step" value="Date" />
+				</condition>
+				<effect util="1">
+					<set var="u_m" value="{MachineUtterance}" />
+				</effect>
+			</case>
+		</rule>
+		<rule>
+			<case>
+				<condition>
+					<if var="current_step" value="Currency" />
+				</condition>
+				<effect util="1">
+					<set var="u_m" value="{MachineUtterance}" />
+				</effect>
+			</case>
+		</rule>
+		<rule>
+			<case>
+				<condition>
+					<if var="current_step" value="StringList" />
+				</condition>
+				<effect util="1">
+					<set var="u_m" value="{MachineUtterance}" />
+				</effect>
+			</case>
+		</rule>
+		<rule>
+			<case>
+				<condition>
+					<if var="current_step" value="Numeric" />
+				</condition>
+				<effect util="1">
+					<set var="u_m" value="{MachineUtterance}" />
+				</effect>
+			</case>
+		</rule>
+		
+		<rule>
+			<case>
+				<condition>
+					<if var="current_step" value="StringSlot" />
+				</condition>
+				<effect util="1">
+					<set var="u_m" value="{MachineUtterance}" />
+				</effect>
+			</case>
+		</rule>	
+		<rule>
+			<case>
+				<condition>
+					<if var="current_step" value="Confirmation" />
+				</condition>
+				<effect util="1">
+					<set var="u_m" value="{MachineUtterance}" />
+				</effect>
+			</case>
+		</rule>
+		
+		<!-- Closes the interaction -->
+		<rule>
+			<case>
+				<condition>
+					<if var="current_step" value="Close" />
+				</condition>
+				<effect util="1">
+					<set var="u_m" value="Thank you for choosing us and hoping to welcome you back soon." />
+				</effect>
+			</case>
+		</rule>
+		
+		<!-- Redirecting the interaction to a human.-->
+		<rule>
+			<case>
+				<condition>
+					<if var="current_step" value="CloseWithHelpline" />
+				</condition>
+				<effect util="1">
+					<set var="u_m" value="I will redirect you to one of our customer specialists now. Thank you for choosing us and hoping to welcome you back soon." />
+				</effect>
+			</case>
+		</rule>
+	</model>
+
+	<model trigger="a_m">
+		<!-- Model producing new system utterances related to the last system action -->
+		<rule>
+			<case>
+				<condition>
+					<if var="a_m" value="AskRepeat" />
+					<if var="current_step" value="Init" />
+					<if var="AskRepeat" relation="&lt;" value="3" />
+				</condition>
+				<effect util="1">
+					<set var="u_m"
+						value="Sorry, could you specify what you would like to do? You can perform the following actions: {action_string}" />
+				</effect>
+			</case>
+			<case>
+				<condition>
+					<if var="a_m" value="AskRepeat" />
+					<if var="current_step" value="Init" />
+					<if var="AskRepeat" value="3" />
+				</condition>
+				<effect util="1">
+					<set var="u_m"
+						value="This is your last chance. You can perform the following actions: {action_string}" />
+				</effect>
+			</case>
+			<!-- Any new slot type should be added to the list below-->
+			<case>
+				<condition>
+					<if var="a_m" value="AskRepeat" />
+					<if var="current_step" relation="in" value="[StringSlot,Date,Currency,StringList,Numeric,Confirmation]" />
+					<if var="AskRepeat" value="3" />
+				</condition>
+				<effect util="1">
+					<set var="u_m"
+						value="This is your last chance. {ConstraintRequest}" />
+				</effect>
+			</case>
+			<case>
+				<condition>
+					<if var="a_m" value="AskRepeat" />
+					<if var="current_step" relation="in" value="[StringSlot,Date,Currency,StringList,Numeric,Confirmation]" />
+					<if var="AskRepeat" relation="&lt;" value="3" />
+				</condition>
+				<effect util="1">
+					<set var="u_m"
+						 value="{ConstraintRequest}" />
+				</effect>
+			</case>
+			<case>
+				<condition>
+					<if var="a_m-prev" value="AskRepeat" />
+					<if var="a_m" value="AskRepeat" />
+					<if var="AskRepeat" relation="&lt;" value="3" />
+				</condition>
+				<effect util="1">
+					 <set var="u_m" value="Sorry I couldn't understand you. Could you please repeat one more time?" />
+				</effect>
+			</case> 
+			<case>
+				<condition>
+					<if var="a_m" value="AskRepeat" />
+					<if var="AskRepeat" relation="&lt;" value="3" />
+				</condition>
+				<effect util="1">
+					<set var="u_m" value="Sorry, could you repeat your answer?" />
+				</effect>
+			</case>
+			<case>
+				<condition>
+					<if var="a_m" value="AskRepeat" />
+					<if var="AskRepeat" value="3" />
+				</condition>
+				<effect util="1">
+					<set var="u_m" value="This is your last chance to correct your answer. Otherwise I will redirect you to one of our operators. Please provide me a right answer." />
+				</effect>
+			</case>
+		</rule>
+		<rule>
+			<case>
+				<condition>
+					<if var="a_m" value="ValidateRepeat" />
+				</condition>
+				<effect util="1">
+					<set var="u_m" value="{SlotNotValidated} Do you want to choose another answer?" />
+				</effect>
+			</case>
+		</rule>
+		<!-- Grounding the restart -->
+		<rule>
+			<case>
+				<condition>
+					<if var="a_m" value="Ground(Restart)" />
+				</condition>
+				<effect util="1">
+					<set var="RestartUtterance" value="OK, how can I help you?" />
+				</effect>
+			</case>
+		</rule>
+		<!-- Grounding the cancellation -->
+		<rule>
+			<case>
+				<condition>
+					<if var="a_m" value="Ground(Cancel)" />
+				</condition>
+				<effect util="1">
+					<set var="u_m" value="OK, I am canceling your request. Can I help you with anything else?" />
+				</effect>
+			</case>
+		</rule>
+		
+		{confirmation_string}
+	</model>
+
+	<model trigger="a_m,current_step">
+	{execution_string}
+	</model>
+
+</domain>

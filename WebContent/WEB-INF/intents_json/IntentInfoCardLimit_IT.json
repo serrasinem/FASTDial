@@ -1,0 +1,51 @@
+{
+"name":"InfoCardLimit",
+"description":"query card limit",
+"keys":"card limit,limit.*card,card.*limit",
+"confirmation":false,
+"execution_call":"execute_card_limit",
+"slots": [{
+	"slot_name":"CardIdentifier",
+	"slot_type": "Numeric",
+	"constraint":"digits:5",
+	"question":"Per favore, inserisci le ultime 5 cifre del numero della carta.",
+	"validation_api": "check_card_number_last10",
+	"error_message": {"not_matched":"Inserisci le ultime 5 cifre del numero della carta. Scusa, il numero che hai fornito non corrisponde a nessuna delle tue carte.",
+		"card_not_found":"I cannot find a card with the given card id."},
+	"mandatory": false
+},
+{
+	"slot_name":"Account",
+	"slot_type": "StringList",
+	"constraint":"_keys_:account_list",
+	"question":"L'identificazione con un numero di carta non ha avuto successo, cerchiamo di trovarla con altre informazioni. A quale conto è associata la carta?",
+	"validation_api": "check_account",
+	"error_message": {"not_matched":"Non siamo riusciti a trovare il conto che stai cercando. Si prega di inserire una delle opzioni tra:"},
+	"mandatory": true,
+	"regex": "conto {slot}"
+},
+{
+	"slot_name":"CardName",
+	"slot_type": "StringList",
+	"constraint":"_keys_:card_list",
+	"dependency": "Account",
+	"question":"Hai {_keys_} carte associate a questo conto. Quale vuoi?",
+	"validation_api": "check_card_name",
+	"error_message": {"not_matched":"Non siamo riusciti a trovare la carta che stai cercando. Si prega di inserire una delle opzioni tra:",
+		"card_not_found":"Non riesco a trovare una carta con l'ID della carta data."},
+	"mandatory": true,
+	"regex": "mia carta {slot}, carta {slot}"
+},
+{
+	"slot_name":"TimePeriod",
+	"slot_type": "StringList",
+	"constraint":"mensile,giornaliero",
+	"question":"Vorresti conoscere il tuo limite giornaliero o mensile?",
+	"validation_api": "check_period",
+	"error_message": {"not_matched":"Il valore del periodo non è corretto. Si prega di inserire una delle opzioni tra:"},
+	"mandatory": true
+}],
+"success_message":"Il limite di trasferimento di {TimePeriod} della tua carta è di {Amount}{CurrencyType}. Posso aiutarti in qualcos'altro?",
+"error_message": "Non possiamo eseguire la richiesta in questo momento. {ErrorMessage} Posso aiutarti in qualcos'altro?",
+"direct_helpline": false
+}

@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain>
+	<!-- Dialogue management (adopted from the original FlightBooking 
+		example of OpenDial and generalized to handle all intents that can be 
+		handled by FASTDial), is composed of three models: an action selection 
+		model to find the best system action to execute, a transition model that 
+		specifies how the selected action at the end of an intent and in the 
+		authentication modifies the current dialogue state, and a prediction model 
+		for the prior distributions on the next user dialogue act. -->
+
+	<model trigger="Operation,Intent">
+		<rule>
+			<case>
+				<condition>
+					<if var="current_step" value="Operation" />
+				</condition>
+				<effect util="5">
+					<set var="a_m" value="Ground(Operation,{Operation})" />
+				</effect>
+				<effect util="0.5">
+					<set var="a_m" value="Confirm(Operation,{Operation})" />
+				</effect>
+			</case>
+		</rule>
+		
+		<!-- If the current step is intent confirmation and the user 
+			confirms/disconfirms the intent, this rule specifies the effect. -->
+		<rule>
+			<case>
+				<condition>
+					<if var="current_step" value="ConfirmIntent" />
+					<if var="a_u" relation="contains" value="Confirm" />
+				</condition>
+				<effect util="5">
+					<set var="a_m" value="Ground({Intent})" />
+				</effect>
+			</case>
+			<case>
+				<condition>
+					<if var="current_step" value="ConfirmIntent" />
+					<if var="a_u" relation="contains" value="Disconfirm" />
+				</condition>
+				<effect util="5">
+					<set var="a_m" value="Ground(Cancel)" />
+				</effect>
+			</case>
+			<case>
+				<condition>
+					<if var="current_step" value="ConfirmIntent" />
+					<if var="a_u" relation="contains" value="Other" />
+				</condition>
+				<effect util="5">
+					<set var="a_m" value="AskRepeat" />
+					<set var="AskRepeat" value="{AskRepeat}+1" />
+				</effect>
+			</case>
+		</rule>
+
+		<!-- If the current step is to ask whether to start another intent and 
+			the user answers no, specifies the utility of closing the interaction. -->
+		<rule>
+			<case>
+				<condition>
+					<if var="current_step" value="Final" />
+					<if var="a_u" relation="contains" value="Disconfirm" />
+				</condition>
+				<effect util="5">
+					<set var="a_m" value="Ground(Close)" />
+				</effect>
+			</case>
+			<case>
+				<condition>
+					<if var="current_step" value="Final" />
+					<if var="a_u" relation="contains" value="Confirm" />
+				</condition>
+				<effect util="5">
+					<set var="a_m" value="Ground(Restart)" />
+				</effect>
+			</case>
+			<case>
+				<condition>
+					<if var="current_step" value="Final" />
+					<if var="a_u" relation="contains" value="Other" />
+				</condition>
+				<effect util="0.1">
+					<set var="a_m" value="AskRepeat" />
+					<set var="AskRepeat" value="{AskRepeat}+1" />
+				</effect>
+			</case>
+		</rule>
+
+		<!-- Specifies the utility of a repetition request -->
+		<rule>
+			<case>
+				<condition>
+					<if var="a_u" value="Other" />
+					<if var="current_step" relation="!=" value="Close" />
+				</condition>
+				<effect util="0.1">
+					<set var="a_m" value="AskRepeat" />
+					<set var="AskRepeat" value="{AskRepeat}+1" />
+				</effect>
+			</case>
+		</rule>
+		
+		<rule>
+			<case>
+				<condition>
+					<if var="a_u" value="Utterance" />
+					<if var="current_step" relation="!=" value="Close" />
+					<if var="current_step" relation="!=" value="ConfirmSlotEdit" />
+				</condition>
+				<effect util="0.1">
+					<set var="a_m" value="AskRepeat" />
+					<set var="AskRepeat" value="{AskRepeat}+1" />
+				</effect>
+			</case>
+		</rule>
+		<rule>
+			<case>
+				<effect util="-4.5">
+					<set var="a_m" value="Ground(*)" />
+				</effect>
+				<effect util="-0.3">
+					<set var="a_m" value="Confirm(*)" />
+				</effect>
+				<effect util="-0.03">
+					<set var="a_m" value="AskRepeat" />
+				</effect>
+			</case>
+		</rule>
+		
+		
+		<!-- Records the next-to-last system action -->
+		<rule>
+			<case>
+				<effect>
+					<set var="a_m-prev" value="{a_m}" />
+				</effect>
+			</case>
+		</rule>
+
+	</model>
+
+	<model trigger="a_m">
+		<rule>
+			<case>
+				<condition>
+					<if var="a_m" value="Ground(Cancel)" />
+				</condition>
+				<effect prob="1">
+					<set var="current_step" value="Final" />
+				</effect>
+			</case>
+			<case>
+				<condition>
+					<if var="a_m" value="Ground(Restart)" />
+				</condition>
+				<effect prob="1">
+					<set var="current_step" value="Init" />
+					<set var="Operation" value="None" />
+					<set var="a_u" value="None" />
+					<set var="Restarted" value="true" />
+				</effect>
+			</case>
+			<case>
+				<condition>
+					<if var="a_m" value="Ground(Close)" />
+				</condition>
+				<effect prob="1">
+					<set var="current_step" value="Close" />
+				</effect>
+			</case>
+		</rule>
+
+	</model>
+	
+	<model trigger="a_m,current_step">
+		<rule>
+			<case>
+				<condition>
+					<if var="a_m" value="(AskRepeat|None)"/>
+					<if var="a_u" relation="!=" value="None"/>
+					<if var="a_u" relation="!=" value="Other"/>
+				</condition>
+				<effect prob="0.3">
+					<set var="a_u^p" value="{a_u}"/>
+				</effect>
+			</case>
+			<case>
+				<condition operator="or">
+					<if var="a_m" value="Confirm(*)"/>
+					<if var="current_step" value="Confirm{Intent}"/>
+					<if var="current_step" value="Final"/>
+				</condition>
+				<effect prob="0.2">
+					<set var="a_u^p" value="[Confirm]"/>
+				</effect>
+				<effect prob="0.2">
+					<set var="a_u^p" value="[Disconfirm]"/>
+				</effect>
+			</case>
+			<case>
+				<effect>
+					<set var="a_u^p" value="None"/>
+				</effect>
+			</case>
+		</rule>
+		
+	</model>
+
+</domain>

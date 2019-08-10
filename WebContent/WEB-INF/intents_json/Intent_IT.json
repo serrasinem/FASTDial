@@ -1,0 +1,11 @@
+{
+"name":"AllPossible",
+"description":"",
+"keys":"cosa (può|puo|posso|poss).* fare,(cosa | dire).* le opzioni,cosa.* possibile (intento | azione), cosa.* la tua (capacità|capacita) .*,puoi elencare,come puoi aiutare .*",
+"confirmation":false,
+"execution_call":"execute_list",
+"slots:":[],
+"success_message":"Puoi eseguire molte operazioni bancarie come trasferimento di denaro, controllo del saldo, o molti altri. Cosa ti piacerebbe fare?",
+"error_message": "",
+"direct_helpline": false
+}

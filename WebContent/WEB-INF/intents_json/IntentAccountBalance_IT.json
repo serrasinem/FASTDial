@@ -1,0 +1,21 @@
+{
+"name":"AccountBalance",
+"description":"account balance query",
+"keys":"importo,estratto conto,saldo,quanto,soldi,quanti",
+"confirmation":false,
+"execution_call":"execute_balance",
+"slots": [{
+	"slot_name":"Account",
+	"slot_type": "StringList",
+	"constraint":"_keys_:account_list",
+	"question":"Hai {_keys_} account. Quale dei tuoi account vorresti interrogare?",
+	"validation_api": "check_account",
+	"error_message": {"not_matched":"Scusa, non sono riuscito a trovare l'account che stai cercando. Si prega di inserire una delle opzioni tra: ",
+					"no_account":"Non esiste un account con il nome specificato."},
+	"mandatory": true,
+	"regex":"da {slot}, dal {slot},conto {slot}"
+}],
+"success_message":"Il saldo attuale del tuo conto {Account} è {Amount} {CurrencyType}. Posso aiutarti in qualcos'altro?",
+"error_message": "C'è stato un errore mentre stavamo controllando il tuo saldo nel tuo conto {Account}. Posso aiutarti in qualcos'altro?",
+"direct_helpline": false
+}

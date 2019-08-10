@@ -1,0 +1,21 @@
+{
+"name":"AccountBalance",
+"description":"account balance query",
+"keys":"balance,how much money do i have,how much money .* there,how much,amount,money .*enough",
+"confirmation":false,
+"execution_call":"execute_balance",
+"slots": [{
+	"slot_name":"Account",
+	"slot_type": "StringList",
+	"constraint":"_keys_:account_list",
+	"question":"You have {_keys_} accounts. Which of your accounts would you like to query?",
+	"validation_api": "check_account",
+	"error_message": {"not_matched":"I couldn't find such an account. Your account list is: ",
+					  "no_account":"There is no account with the given name."},
+	"mandatory": true,
+	"regex":"from {slot}, in my {slot}, in {slot} account"
+}],
+"success_message":"The current balance on your {Account} account is {Amount} {CurrencyType}. Can I help you with anything else?",
+"error_message": "There was an error while we are checking your balance in the account {Account}. Can I help you with anything else?",
+"direct_helpline": false
+}

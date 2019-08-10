@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<domain>
+ 
+	<!-- FASTDial Dialog Agent -->
+	 
+	<initialstate>
+		<variable id="lang">
+			<value>Italian</value>
+		</variable>
+		<!-- Starting prompt -->
+		<variable id="u_m">
+			<value>Benvenuto in FASTDial. Come posso aiutarti oggi?</value>
+		</variable> 
+		<variable id="current_step">
+			<!-- <value>Init</value> -->
+			<value>StartAuthentication</value>
+		</variable>
+		<variable id="AskRepeat">
+			<value>0</value> 
+		</variable>
+	</initialstate>
+
+				<!-- Natural language understanding models -->
+			<import href="FASTDomain_nlu_it.xml"/>
+
+			<!--  Dialogue management models (action selection and transition) -->
+			<import href="FASTDomain_dm.xml"/>
+
+			<!-- Natural language generation models -->
+			<import href="FASTDomain_nlg_it.xml"/>
+	
+</domain>

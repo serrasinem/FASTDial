@@ -1,0 +1,28 @@
+{
+"name":"Authentication",
+"description":"",
+"keys":"_authentication_",
+"confirmation":false,
+"execution_call":"execute_authenticate",
+"slots": [{
+	"slot_name":"Name",
+	"slot_type": "StringSlot",
+	"constraint":"",
+	"question":"Please enter your username.",
+	"validation_api": "check_username",
+	"error_message": {"not_matched":"No user with the given username found."},
+	"mandatory": true
+},
+{
+	"slot_name":"Password",
+	"slot_type": "StringSlot",
+	"constraint":"",
+	"question":"Please enter your 8 character password.",
+	"validation_api": "check_password",
+	"error_message": {"not_matched":"You have entered an incorrect password."},
+	"mandatory": true
+}],
+"success_message":"Thank you for your patience, we have authenticated you. How can I help you today?" ,
+"error_message": "Sorry, we cannot authenticate you. I will redirect you to one of our customer specialists now. Thank you for your patience.",
+"direct_helpline": true
+}
