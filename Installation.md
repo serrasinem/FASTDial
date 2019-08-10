@@ -2,8 +2,8 @@
 
 ## To compile and run FASTDial, please follow the instructions below:
 
-1- Download OpenDial toolkit http://www.opendial-toolkit.net/download
-2- Copy opendial-1.4.jar into the lib folder
+1- Download OpenDial toolkit http://www.opendial-toolkit.net/download  
+2- Copy opendial-1.4.jar into the lib folder  
 3- Download telegrambots packages ( https://github.com/rubenlagus/TelegramBots ) and move them to
    the lib folder. The required packages are   
 	- telegrambots-3.6-jar-with-dependencies.jar  
