@@ -1,6 +1,7 @@
 # FASTDial Installation, Compile and Run
 
 ## To compile and run FASTDial, please follow the instructions below:
+
 1- Download OpenDial toolkit http://www.opendial-toolkit.net/download
 2- Copy opendial-1.4.jar into the lib folder
 3- Download telegrambots packages ( https://github.com/rubenlagus/TelegramBots ) and move them to
@@ -13,6 +14,7 @@
 5- Otherwise, if you do not have gradle, please install gradle.
 
 ## Telegram Installation Guide
+
 1- Create a telegram bot and obtain a BotUsername and BotToken.
 2- Fill telegramBotUsername and telegramBotToken in telegram.properties with the obtained username and token.
 3- Build FastDial using build.gradle.
@@ -26,7 +28,8 @@
 2- If you are using Eclipse IDE, run the FASTDial project on server. 
 3- If you want to run the .WAR package only:
 
-War Installation on an external Servlet:
+Running .war on an external Servlet:
+
 1. Move fastdial.properties file into the webapps folder of Tomcat. The folder should be found in `{catalina_base}/webapps`
 2. Create a log folder for the FASTDial Service, e.g. `mkdir {catalina_base}/logFolder`
 3. Open `{catalina_base}/webapps/fastdial.properties` and set the logPath as the "Absolute" path of the new log folder.
