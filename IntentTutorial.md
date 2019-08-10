@@ -1,4 +1,5 @@
-#FASTDial Intent Design and Registration
+
+# FASTDial Intent Design and Registration
 
 Below are the basic instructions on how to write an intent in FASTDial.
 
@@ -8,7 +9,7 @@ Below are the basic instructions on how to write an intent in FASTDial.
 - The intent file should be named by adding the language extension: for English "IntentFileName_EN.json",
 and for Italian "IntentFileName_IT.json".
 
-##*************************The Content of an Intent File******************************
+## The Content of an Intent File
 
 An intent json file should contain the below variables:
 
