@@ -1,6 +1,6 @@
 # FASTDial Installation, Compile and Run
 
-##To compile and run FASTDial, please follow the instructions below:
+## To compile and run FASTDial, please follow the instructions below:
 1- Download OpenDial toolkit http://www.opendial-toolkit.net/download
 2- Copy opendial-1.4.jar into the lib folder
 3- Download telegrambots packages ( https://github.com/rubenlagus/TelegramBots ) and move them to
@@ -12,7 +12,7 @@
 4- If you do not want to install gradle, please download necessary dependencies specified in the build.gradle file into the lib folder.
 5- Otherwise, if you do not have gradle, please install gradle.
 
-##Telegram Installation Guide
+## Telegram Installation Guide
 1- Create a telegram bot and obtain a BotUsername and BotToken.
 2- Fill telegramBotUsername and telegramBotToken in telegram.properties with the obtained username and token.
 3- Build FastDial using build.gradle.
@@ -20,7 +20,7 @@
 5- If you do not want to use gradle: run /FASTDial/src/fastdial/interfaces/telegram/RegisterBot.java as java application
 
 
-##Service Installation Guide
+## Service Installation Guide
 
 1- Install a Tomcat server that is version 6 or higher.
 2- If you are using Eclipse IDE, run the FASTDial project on server. 
