@@ -113,14 +113,67 @@ The content of an example intent file:
 In the Account Balance intent, {Amount} and {CurrencyType} variables must be returned by the middleware as the response of the intent execution.
 
 
-#FASTDial-Middleware Interaction Protocol
+# FASTDial-Middleware Interaction Protocol
 
-##Dialogue Flow
+The interaction between a backend/middleware and FASTDial is designed as json messages. 
+
+### Session ID (session_id):
+ A valid UUID unique to the session/user. It should always be included in both the client and the server messages.
+ 
+### Client Message Types (message_type):
+ Request message types sent by the backend to the FASTDial
+ * BEGIN_SESSION: to initialize a dialogue session
+ * USER_UTTERANCE: to push a new user utterance to FASTDial
+ * QUERY_RESPONSE: to send the response of a KB_QUERY or VALIDATION_QUERY
+
+### Client Message (message):
+ * disable_auth at the BEGIN_SESSION step to disable the authentication procedure. Otherwise, every session stars with an authentication intent which is defined as another intent. 
+ * user utterance if the client message_type is USER_UTTERANCE
+ * intent name if the client message_type is QUERY_RESPONSE and state is NOTIFY_INTENT_SUCCESS
+ * query results if the client message_type is QUERY_RESPONSE and state is QUERY_SUCCESS
+ * validated slot value if the client message_type is QUERY_RESPONSE and state is VALIDATION_SUCCESS
+ * error code pair (e.g., error_code:limit_exceeded) if the client message_type is QUERY_RESPONSE and state is VALIDATION_FAILED
+ * intent execution response variables if the client message_type is QUERY_RESPONSE and state is EXECUTE_INTENT_SUCCESS
+
+### Client State (state):
+ Request states sent by the backend to the FASTDial
+ * VALIDATION_FAILED: when slot value is not valid
+ * VALIDATION_SUCCESS: when slot value is valid
+ * NOTIFY_INTENT_SUCCESS: the detected intent can be handled by the backend
+ * NOTIFY_INTENT_FAILED: the detected intent is unknown or cannot be handled at the moment
+ * QUERY_SUCCESS: when the KB query is successful
+ * QUERY_FAILED: when the KB query is failed
+ * EXECUTE_INTENT_SUCCESS: when the intent is executed successfully
+ * EXECUTE_INTENT_FAILED: when the intent execution is failed
+ 
+### Server Message (message):
+ * machine utterance if the server message_type is MACHINE_UTTERANCE
+ * intent_check if the server message_type is NOTIFY_INTENT
+ * query call name if the server message_type is KB_QUERY
+ * detected slot value if the server message_type is VALIDATION_QUERY
+ 
+### Server Message Types (message_type):
+ Response message types sent by FASTDial to the backend.
+ * MACHINE_UTTERANCE: to send a machine utterance to the user
+ * VALIDATION_QUERY: to request a validation of a detected slot value
+ * END_SESSION: to finalize the session
+ * HELPLINE: to redirect the user to a human operator
+ * KB_QUERY: to request a knowledge base query
+ * EXECUTE_INTENT: to execute an intent 
+ * NOTIFY_INTENT: to inform the backend about the new user intent
+ 
+### Intent (intent):
+Detected intent name
+ 
+### Information Type (information_type):
+ KB Query and Validation api call name
+
+
+## Server-Client Dialogue Flow
 
 Simple Pseudo-flow of a bot (Server) and a client (Middleware) interaction
 
 Starting a session without authentication phase:
-
 Client: Init session
 
 	{
@@ -235,7 +288,7 @@ Client: Execution success/fail
     "session_id": "aaa111a1-1aaa-11aa-1a1a-1a1aa11a11a1",
     "message_type": "QUERY_RESPONSE",
     "state": "EXECUTE_INTENT_SUCCESS",
-    "message": {"Amount":100,"CurrencyType":"€"}
+    "message": {"Amount":100,"CurrencyType":€}
 	}
 
 Server: Execution response utterance and restart question
@@ -243,7 +296,10 @@ Server: Execution response utterance and restart question
 	{
     "session_id": "aaa111a1-1aaa-11aa-1a1a-1a1aa11a11a1",
     "message_type": "MACHINE_UTTERANCE",
-    "message": "The current balance on your checking account is 100 \\u20ac. Can I help you with anything else?"
+    "message": "The current balance on your checking account is 100 €. Can I help you with anything else?"
 	}
+
+
+To see a brief example of how to implement a Telegram backend please check the source file /FASTDial/src/fastdial/interfaces/telegram/MidwareSimulation.java . Telegram Interface simply calls the callAPI method in this file, which generates an APIRequest object using a json object exemplified as the client calls above. 
 
 
