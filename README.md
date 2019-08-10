@@ -5,7 +5,7 @@ We present a novel abstraction framework called FASTDial for designing task orie
 
 The dialogue management service of FASTDial heavily  depends on the middleware interaction to retrieve the relevant information throughout the dialogue.  The necessary middleware interaction is handled by using web service responses/Telegram midware KB simulation. FASTDial produces 2-types of DMS outputs: i) Machine Utterance and ii) API call. 
 
-You can find the further details in the paper listed in the reference section.
+You can find he further details in the paper listed below.
 
 ## Reference
 If you are using FASTDial for research purposes, please cite:
