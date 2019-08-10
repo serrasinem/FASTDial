@@ -89,7 +89,7 @@ public class APIServerBot {
 		o.put("session_id", id);
 		if (auth)
 			o.put("intent", "Authentication");
-		o.put("message_type", "MESSAGE");
+		o.put("message_type", "MACHINE_UTTERANCE");
 		o.put("message", output);
 		return o;
 	}

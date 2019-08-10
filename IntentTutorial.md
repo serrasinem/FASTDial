@@ -303,4 +303,5 @@ Server: Execution response utterance and restart question
 
 To see a brief example of how to implement a Telegram backend please check the source file /FASTDial/src/fastdial/interfaces/telegram/MidwareSimulation.java . Telegram Interface simply calls the callAPI method in this file, which generates an APIRequest object using a json object exemplified as the client calls above. 
 
+The tutorial will be updated to give the instructions on how to create intents in languages other than Italian and English.
 

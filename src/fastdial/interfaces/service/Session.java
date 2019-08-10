@@ -42,10 +42,7 @@ public class Session {
 
 		Domain domain;
 
-		if (lang.equals("hungarian")) {
-			domain = XMLDomainReader
-					.extractDomain(properties.getProperty("domainPathHungarian"));
-		} else if (lang.equals("italian")) {
+		 if (lang.equals("italian")) {
 			domain = XMLDomainReader
 					.extractDomain(properties.getProperty("domainPathItalian"));
 		} else {
