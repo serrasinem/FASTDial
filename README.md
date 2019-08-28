@@ -7,7 +7,7 @@ The dialogue management service of FASTDial heavily  depends on the middleware i
 
 To install FASTDial, please check the Installation.md file. To implement new intents or create a client, please check the IntentTutorial.md file. 
 
-You can find he further details in the paper listed below.
+You can find the further details in the paper listed below.
 
 ## Reference
 If you are using FASTDial for research purposes, please cite:
