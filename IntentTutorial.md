@@ -11,7 +11,7 @@ and for Italian "IntentFileName_IT.json".
 
 ## The Content of an Intent File
 
-An intent json file should contain the below variables:
+An intent json file should contain the variables below :
 
 - name: defines the name of the intent. Any string can be an intent name. It should be unique among all the registered intents in the same language.
 
